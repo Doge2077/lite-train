@@ -1,2 +1,11 @@
 server:
   port: 8000
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: member
+          predicates:
+            - Path=/member/**
+          uri: http://127.0.0.1:8001
+
