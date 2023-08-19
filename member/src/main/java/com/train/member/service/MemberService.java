@@ -2,6 +2,7 @@ package com.train.member.service;
 
 import com.train.common.exception.BusinessException;
 import com.train.common.exception.BusinessExceptionEnum;
+import com.train.common.util.SnowUtil;
 import com.train.member.domain.Member;
 import com.train.member.domain.MemberExample;
 import com.train.member.mapper.MemberMapper;
@@ -31,7 +32,7 @@ public class MemberService {
         }
 
         Member member = new Member();
-        member.setId(System.currentTimeMillis());
+        member.setId(SnowUtil.getSnowflakeNextId());
         member.setMobile(mobile);
         memberMapper.insert(member);
         return member.getId();
