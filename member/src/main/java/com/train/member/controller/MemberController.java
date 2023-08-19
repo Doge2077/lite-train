@@ -3,6 +3,7 @@ package com.train.member.controller;
 import com.train.common.resp.CommonResp;
 import com.train.member.service.MemberService;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ public class MemberController {
     }
 
     @PostMapping("register")
-    public CommonResp<Long> register(MemberRegisterReq req) {
+    public CommonResp<Long> register(@Valid MemberRegisterReq req) {
         Long register =  memberService.register(req);
         return new CommonResp<Long>(register);
     }
