@@ -5,6 +5,7 @@ import com.train.member.domain.MemberExample;
 import com.train.member.mapper.MemberMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import req.MemberRegisterReq;
 
 import java.util.List;
 
@@ -18,13 +19,13 @@ public class MemberService {
         return Math.toIntExact(memberMapper.countByExample(null));
     }
 
-    public Long register(String mobile) {
-
+    public Long register(MemberRegisterReq req) {
+        String mobile = req.getMobile();
         MemberExample memberExample = new MemberExample();
         memberExample.createCriteria().andMobileEqualTo(mobile);
         List<Member> memberList = memberMapper.selectByExample(memberExample);
         if (!memberList.isEmpty()) {
-            throw new RuntimeException("Phone number has registered!");
+            throw new RuntimeException(":Phone number has registered!");
         }
 
         Member member = new Member();
