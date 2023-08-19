@@ -24,6 +24,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.train</groupId>
             <artifactId>common</artifactId>
         </dependency>

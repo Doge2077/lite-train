@@ -1,5 +1,7 @@
 package com.train.member.service;
 
+import com.train.common.exception.BusinessException;
+import com.train.common.exception.BusinessExceptionEnum;
 import com.train.member.domain.Member;
 import com.train.member.domain.MemberExample;
 import com.train.member.mapper.MemberMapper;
@@ -25,7 +27,7 @@ public class MemberService {
         memberExample.createCriteria().andMobileEqualTo(mobile);
         List<Member> memberList = memberMapper.selectByExample(memberExample);
         if (!memberList.isEmpty()) {
-            throw new RuntimeException(":Phone number has registered!");
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
         }
 
         Member member = new Member();
