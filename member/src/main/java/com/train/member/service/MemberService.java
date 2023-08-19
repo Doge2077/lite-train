@@ -5,7 +5,7 @@ import com.train.member.domain.MemberExample;
 import com.train.member.mapper.MemberMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-import req.MemberRegisterReq;
+import com.train.member.req.MemberRegisterReq;
 
 import java.util.List;
 
