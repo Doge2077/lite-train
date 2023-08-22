@@ -2,8 +2,11 @@
   <a-layout-header class="header">
     <div class="logo">
       <router-link to="/welcome" style="color: white; font-size: 18px">
-        甲蛙12306
+        Lite-train
       </router-link>
+      <span>
+        <a href="https://github.com/Doge2077/lite-train" target="_blank">LYS</a>
+      </span>
     </div>
     <div style="float: right; color: white;">
       您好：{{member.mobile}} &nbsp;&nbsp;
