@@ -19,7 +19,7 @@ public class JwtUtil {
     /**
      * 盐值很重要，不能泄漏，且每个项目都应该不一样，可以放到配置文件中
      */
-    private static final String key = "Jiawa12306";
+    private static final String key = "lite-train/Doge2077";
 
     public static String createToken(Long id, String mobile) {
         LOG.info("开始生成JWT token，id：{}，mobile：{}", id, mobile);
