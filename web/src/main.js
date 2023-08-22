@@ -40,10 +40,15 @@ axios.interceptors.response.use(function (response) {
   const status = response.status;
   if (status === 401) {
     // 判断状态码是401 跳转到登录页
-    console.log("未登录或登录超时，跳到登录页");
+    console.log("未登录或登录超时");
     store.commit("setMember", {});
-    notification.error({ description: "未登录或登录超时" });
+    notification.error({ description: "未登录或登录超时 🤣👉🤡" });
     router.push('/login');
+  }
+  else if (status === 404) {
+    console.log("页面未找到");
+    notification.error({ description: "404 NOT FOUND 🤣👉🤡" });
+    router.push('/welcome');
   }
   return Promise.reject(error);
 });
