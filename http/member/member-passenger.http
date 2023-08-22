@@ -12,6 +12,17 @@ token: {{token}}
 }
 
 ###
+POST http://localhost:8000/member/passenger/save
+Content-Type: application/json
+token: {{token}}
+
+{
+  "name": "test3",
+  "idCard": "123321",
+  "type": "1"
+}
+
+###
 
 GET http://localhost:8000/member/passenger/query-list?page=1&size=10
 Accept: application/json

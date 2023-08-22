@@ -4,6 +4,7 @@ import com.train.common.exception.BusinessException;
 import com.train.common.resp.CommonResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -71,6 +72,21 @@ public class ControllerExceptionHandler {
     @ResponseBody
     public CommonResp exceptionHandler(RuntimeException e) {
         throw e;
+    }
+
+    /**
+     *  数据库异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
+    @ResponseBody
+    public CommonResp exceptionHandler(DataIntegrityViolationException e) {
+        CommonResp commonResp = new CommonResp();
+        LOG.error("数据库异常：{}", e.getMessage());
+        commonResp.setSuccess(false);
+        commonResp.setMessage(e.getMessage());
+        return commonResp;
     }
 
 
