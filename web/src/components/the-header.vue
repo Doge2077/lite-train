@@ -10,7 +10,7 @@
     </div>
     <div style="float: right; color: white;">
       您好：{{member.mobile}} &nbsp;&nbsp;
-      <router-link to="/login" style="color: white;">
+      <router-link @click="logout" to="/login" style="color: white;">
         退出登录
       </router-link>
     </div>
@@ -58,6 +58,7 @@
 import {defineComponent, ref, watch} from 'vue';
 import store from "@/store";
 import router from '@/router'
+import {notification} from "ant-design-vue";
 
 export default defineComponent({
   name: "the-header-view",
@@ -70,9 +71,16 @@ export default defineComponent({
       selectedKeys.value = [];
       selectedKeys.value.push(newValue);
     }, {immediate: true});
+
+    const logout = () => {
+      store.commit("setMember", {});
+      notification.success({description: '退出登录，感谢使用'})
+      router.push('/login');
+    }
     return {
       member,
-      selectedKeys
+      selectedKeys,
+      logout
     };
   },
 });
