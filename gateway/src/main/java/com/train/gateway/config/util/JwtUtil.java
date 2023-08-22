@@ -25,7 +25,7 @@ public class JwtUtil {
         LOG.info("开始生成JWT token，id：{}，mobile：{}", id, mobile);
         GlobalBouncyCastleProvider.setUseBouncyCastle(false);
         DateTime now = DateTime.now();
-        DateTime expTime = now.offsetNew(DateField.HOUR, 24);
+        DateTime expTime = now.offsetNew(DateField.HOUR, 24 * 7);
         Map<String, Object> payload = new HashMap<>();
         // 签发时间
         payload.put(JWTPayload.ISSUED_AT, now);
