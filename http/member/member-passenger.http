@@ -17,21 +17,23 @@ Content-Type: application/json
 token: {{token}}
 
 {
-  "name": "test3",
+  "name": "wccc",
   "idCard": "123321",
   "type": "1"
 }
 
 ###
-
-GET http://localhost:8000/member/passenger/query-list?page=1&size=10
-Accept: application/json
+POST http://localhost:8000/member/passenger/save
+Content-Type: application/json
 token: {{token}}
+
+{
+  "id": "1694249334754906112",
+  "memberId": "1693620129994248192",
+  "name": "notwcovo",
+  "idCard": "123321",
+  "type": "1"
+}
+
 
 ###
-
-DELETE http://localhost:8000/member/passenger/delete/1628627401883914240
-Accept: application/json
-token: {{token}}
-
-
