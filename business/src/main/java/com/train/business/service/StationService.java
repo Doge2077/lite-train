@@ -1,18 +1,21 @@
 package com.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.train.common.resp.PageResp;
-import com.train.common.util.SnowUtil;
 import com.train.business.domain.Station;
 import com.train.business.domain.StationExample;
 import com.train.business.mapper.StationMapper;
 import com.train.business.req.StationQueryReq;
 import com.train.business.req.StationSaveReq;
 import com.train.business.resp.StationQueryResp;
+import com.train.common.exception.BusinessException;
+import com.train.common.exception.BusinessExceptionEnum;
+import com.train.common.resp.PageResp;
+import com.train.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +35,11 @@ public class StationService {
         DateTime nowTime = DateTime.now();
         Station station = BeanUtil.copyProperties(req, Station.class);
         if (ObjectUtil.isNull(station.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            Station stationDB = selectByUnique(req.getName());
+            if (ObjectUtil.isNotEmpty(stationDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_STATION_NAME_UNIQUE_ERROR);
+            }
             station.setId(SnowUtil.getSnowflakeNextId());
             station.setCreateTime(nowTime);
             station.setUpdateTime(nowTime);
@@ -40,6 +48,17 @@ public class StationService {
             station.setCreateTime(station.getCreateTime());
             station.setUpdateTime(nowTime);
             stationMapper.updateByPrimaryKey(station);
+        }
+    }
+
+    private Station selectByUnique(String name) {
+        StationExample stationExample = new StationExample();
+        stationExample.createCriteria().andNameEqualTo(name);
+        List<Station> list = stationMapper.selectByExample(stationExample);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
         }
     }
 

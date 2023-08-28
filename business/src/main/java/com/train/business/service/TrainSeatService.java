@@ -14,6 +14,8 @@ import com.train.business.mapper.TrainSeatMapper;
 import com.train.business.req.TrainSeatQueryReq;
 import com.train.business.req.TrainSeatSaveReq;
 import com.train.business.resp.TrainSeatQueryResp;
+import com.train.common.exception.BusinessException;
+import com.train.common.exception.BusinessExceptionEnum;
 import com.train.common.resp.PageResp;
 import com.train.common.util.SnowUtil;
 import jakarta.annotation.Resource;
@@ -90,6 +92,10 @@ public class TrainSeatService {
         // 查找当前车次下的所有的车厢
         List<TrainCarriage> carriageList = trainCarriageService.selectByTrainCode(trainCode);
         LOG.info("当前车次下的车厢数：{}", carriageList.size());
+
+        if (carriageList.isEmpty()) {
+            throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CARRIAGE_INDEX_COUNT_ERROR);
+        }
 
         // 循环生成每个车厢的座位
         for (TrainCarriage trainCarriage : carriageList) {

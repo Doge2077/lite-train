@@ -1,18 +1,21 @@
 package com.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.train.common.resp.PageResp;
-import com.train.common.util.SnowUtil;
 import com.train.business.domain.TrainStation;
 import com.train.business.domain.TrainStationExample;
 import com.train.business.mapper.TrainStationMapper;
 import com.train.business.req.TrainStationQueryReq;
 import com.train.business.req.TrainStationSaveReq;
 import com.train.business.resp.TrainStationQueryResp;
+import com.train.common.exception.BusinessException;
+import com.train.common.exception.BusinessExceptionEnum;
+import com.train.common.resp.PageResp;
+import com.train.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +35,11 @@ public class TrainStationService {
         DateTime nowTime = DateTime.now();
         TrainStation trainStation = BeanUtil.copyProperties(req, TrainStation.class);
         if (ObjectUtil.isNull(trainStation.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            TrainStation trainStationDB = selectByUnique(req.getTrainCode(), req.getIndex());
+            if (ObjectUtil.isNotEmpty(trainStationDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_INDEX_UNIQUE_ERROR);
+            }
             trainStation.setId(SnowUtil.getSnowflakeNextId());
             trainStation.setCreateTime(nowTime);
             trainStation.setUpdateTime(nowTime);
@@ -40,6 +48,19 @@ public class TrainStationService {
             trainStation.setCreateTime(trainStation.getCreateTime());
             trainStation.setUpdateTime(nowTime);
             trainStationMapper.updateByPrimaryKey(trainStation);
+        }
+    }
+
+    private TrainStation selectByUnique(String trainCode, Integer index) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        trainStationExample.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andIndexEqualTo(index);
+        List<TrainStation> list = trainStationMapper.selectByExample(trainStationExample);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
         }
     }
 
