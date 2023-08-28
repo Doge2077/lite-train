@@ -1,7 +1,9 @@
 package com.train.member.enums;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public enum PassengerTypeEnum {
 
