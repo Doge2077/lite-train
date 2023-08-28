@@ -1,18 +1,22 @@
 package com.train.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.train.common.resp.PageResp;
-import com.train.common.util.SnowUtil;
 import com.train.business.domain.TrainCarriage;
 import com.train.business.domain.TrainCarriageExample;
+import com.train.business.enums.SeatColEnum;
 import com.train.business.mapper.TrainCarriageMapper;
 import com.train.business.req.TrainCarriageQueryReq;
 import com.train.business.req.TrainCarriageSaveReq;
 import com.train.business.resp.TrainCarriageQueryResp;
+import com.train.common.exception.BusinessException;
+import com.train.common.exception.BusinessExceptionEnum;
+import com.train.common.resp.PageResp;
+import com.train.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,24 +33,52 @@ public class TrainCarriageService {
     private TrainCarriageMapper trainCarriageMapper;
 
     public void save(TrainCarriageSaveReq req) {
-        DateTime nowTime = DateTime.now();
+        DateTime now = DateTime.now();
+
+        // 自动计算出列数和总座位数
+        List<SeatColEnum> seatColEnums = SeatColEnum.getColsByType(req.getSeatType());
+        req.setColCount(seatColEnums.size());
+        req.setSeatCount(req.getColCount() * req.getRowCount());
+
         TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
         if (ObjectUtil.isNull(trainCarriage.getId())) {
+
+            // 保存之前，先校验唯一键是否存在
+            TrainCarriage trainCarriageDB = selectByUnique(req.getTrainCode(), req.getIndex());
+            if (ObjectUtil.isNotEmpty(trainCarriageDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_CARRIAGE_INDEX_UNIQUE_ERROR);
+            }
+
             trainCarriage.setId(SnowUtil.getSnowflakeNextId());
-            trainCarriage.setCreateTime(nowTime);
-            trainCarriage.setUpdateTime(nowTime);
+            trainCarriage.setCreateTime(now);
+            trainCarriage.setUpdateTime(now);
             trainCarriageMapper.insert(trainCarriage);
         } else {
-            trainCarriage.setCreateTime(trainCarriage.getCreateTime());
-            trainCarriage.setUpdateTime(nowTime);
+            trainCarriage.setUpdateTime(now);
             trainCarriageMapper.updateByPrimaryKey(trainCarriage);
+        }
+    }
+
+    private TrainCarriage selectByUnique(String trainCode, Integer index) {
+        TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+        trainCarriageExample.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andIndexEqualTo(index);
+        List<TrainCarriage> list = trainCarriageMapper.selectByExample(trainCarriageExample);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
         }
     }
 
     public PageResp<TrainCarriageQueryResp> queryList(TrainCarriageQueryReq req) {
         TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
-        trainCarriageExample.setOrderByClause("id desc");
+        trainCarriageExample.setOrderByClause("train_code asc, `index` asc");
         TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
+        if (ObjectUtil.isNotEmpty(req.getTrainCode())) {
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
 
         LOG.info("查询页码：{}", req.getPage());
         LOG.info("每页条数：{}", req.getSize());
@@ -67,5 +99,13 @@ public class TrainCarriageService {
 
     public void delete(Long id) {
         trainCarriageMapper.deleteByPrimaryKey(id);
+    }
+
+    public List<TrainCarriage> selectByTrainCode(String trainCode) {
+        TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+        trainCarriageExample.setOrderByClause("`index` asc");
+        TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
+        criteria.andTrainCodeEqualTo(trainCode);
+        return trainCarriageMapper.selectByExample(trainCarriageExample);
     }
 }

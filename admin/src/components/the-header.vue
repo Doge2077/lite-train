@@ -2,7 +2,7 @@
   <a-layout-header class="header">
     <div class="logo">
       <router-link to="/welcome" style="color: white; font-size: 18px">
-        甲蛙12306控台
+        Lite-train Admin
       </router-link>
     </div>
     <div style="float: right; color: white;">
