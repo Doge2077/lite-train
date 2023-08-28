@@ -16,8 +16,8 @@ import java.util.*;
 public class ServerGenerator {
     static boolean readOnly = false;
     static String vuePath = "admin/src/views/main/";
-    static String serverPath = "[module]/src/main/java/com/jiawa/train/[module]/";
-    static String pomPath = "com/train/generator/pom.xml";
+    static String serverPath = "[module]/src/main/java/com/train/[module]/";
+    static String pomPath = "generator/pom.xml";
     static String module = "";
     // static {
     //     new File(serverPath).mkdirs();
@@ -34,7 +34,7 @@ public class ServerGenerator {
         System.out.println("servicePath: " + serverPath);
 
         // 读取table节点
-        Document document = new SAXReader().read("com/train/generator/" + generatorPath);
+        Document document = new SAXReader().read("generator/" + generatorPath);
         Node table = document.selectSingleNode("//table");
         System.out.println(table);
         Node tableName = table.selectSingleNode("@tableName");
@@ -52,12 +52,12 @@ public class ServerGenerator {
         DbUtil.user = userId.getText();
         DbUtil.password = password.getText();
 
-        // 示例：表名 jiawa_test
-        // Domain = JiawaTest
+        // 示例：表名 lys_test
+        // Domain = lysTest
         String Domain = domainObjectName.getText();
-        // domain = jiawaTest
+        // domain = lysTest
         String domain = Domain.substring(0, 1).toLowerCase() + Domain.substring(1);
-        // do_main = jiawa-test
+        // do_main = lys-test
         String do_main = tableName.getText().replaceAll("_", "-");
         // 表中文名
         String tableNameCn = DbUtil.getTableComment(tableName.getText());
