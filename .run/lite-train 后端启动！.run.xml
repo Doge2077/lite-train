@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="lite-train 后端启动！" type="CompoundRunConfigurationType">
+    <toRun name="BatchApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="BusinessApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="GatewayApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="MemberApplication" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
