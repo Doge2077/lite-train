@@ -42,6 +42,7 @@ public class PassengerService {
             passenger.setCreateTime(nowTime);
             passenger.setUpdateTime(nowTime);
             passengerMapper.insert(passenger);
+            System.out.println(passenger);
         } else {
             passenger.setCreateTime(passenger.getCreateTime());
             passenger.setUpdateTime(nowTime);
