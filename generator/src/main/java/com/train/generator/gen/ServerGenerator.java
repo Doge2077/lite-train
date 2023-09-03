@@ -82,7 +82,7 @@ public class ServerGenerator {
         gen(Domain, param, "req", "queryReq");
         gen(Domain, param, "resp", "queryResp");
 
-        genVue(do_main, param);
+//        genVue(do_main, param);
     }
 
     private static void gen(String Domain, Map<String, Object> param, String packageName, String target) throws IOException, TemplateException {
