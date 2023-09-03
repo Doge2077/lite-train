@@ -32,21 +32,27 @@ public class TrainStationService {
     private TrainStationMapper trainStationMapper;
 
     public void save(TrainStationSaveReq req) {
-        DateTime nowTime = DateTime.now();
+        DateTime now = DateTime.now();
         TrainStation trainStation = BeanUtil.copyProperties(req, TrainStation.class);
         if (ObjectUtil.isNull(trainStation.getId())) {
+
             // 保存之前，先校验唯一键是否存在
             TrainStation trainStationDB = selectByUnique(req.getTrainCode(), req.getIndex());
             if (ObjectUtil.isNotEmpty(trainStationDB)) {
                 throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_INDEX_UNIQUE_ERROR);
             }
+            // 保存之前，先校验唯一键是否存在
+            trainStationDB = selectByUnique(req.getTrainCode(), req.getName());
+            if (ObjectUtil.isNotEmpty(trainStationDB)) {
+                throw new BusinessException(BusinessExceptionEnum.BUSINESS_TRAIN_STATION_NAME_UNIQUE_ERROR);
+            }
+
             trainStation.setId(SnowUtil.getSnowflakeNextId());
-            trainStation.setCreateTime(nowTime);
-            trainStation.setUpdateTime(nowTime);
+            trainStation.setCreateTime(now);
+            trainStation.setUpdateTime(now);
             trainStationMapper.insert(trainStation);
         } else {
-            trainStation.setCreateTime(trainStation.getCreateTime());
-            trainStation.setUpdateTime(nowTime);
+            trainStation.setUpdateTime(now);
             trainStationMapper.updateByPrimaryKey(trainStation);
         }
     }
@@ -64,10 +70,26 @@ public class TrainStationService {
         }
     }
 
+    private TrainStation selectByUnique(String trainCode, String name) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        trainStationExample.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andNameEqualTo(name);
+        List<TrainStation> list = trainStationMapper.selectByExample(trainStationExample);
+        if (CollUtil.isNotEmpty(list)) {
+            return list.get(0);
+        } else {
+            return null;
+        }
+    }
+
     public PageResp<TrainStationQueryResp> queryList(TrainStationQueryReq req) {
         TrainStationExample trainStationExample = new TrainStationExample();
-        trainStationExample.setOrderByClause("id desc");
+        trainStationExample.setOrderByClause("train_code asc, `index` asc");
         TrainStationExample.Criteria criteria = trainStationExample.createCriteria();
+        if (ObjectUtil.isNotEmpty(req.getTrainCode())) {
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
 
         LOG.info("查询页码：{}", req.getPage());
         LOG.info("每页条数：{}", req.getSize());
@@ -88,5 +110,12 @@ public class TrainStationService {
 
     public void delete(Long id) {
         trainStationMapper.deleteByPrimaryKey(id);
+    }
+
+    public List<TrainStation> selectByTrainCode(String trainCode) {
+        TrainStationExample trainStationExample = new TrainStationExample();
+        trainStationExample.setOrderByClause("`index` asc");
+        trainStationExample.createCriteria().andTrainCodeEqualTo(trainCode);
+        return trainStationMapper.selectByExample(trainStationExample);
     }
 }
