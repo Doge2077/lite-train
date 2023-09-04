@@ -4,6 +4,8 @@ server:
     context-path: "/business"
 
 spring:
+  application:
+    name: business
   datasource:
     username: train
     password: 123456

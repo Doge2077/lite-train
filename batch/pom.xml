@@ -45,6 +45,17 @@
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
 
+        <!--远程调用openfeign-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <!--openfeign默认使用的是loadBalance的负载均衡器  -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-loadbalancer</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

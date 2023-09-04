@@ -4,6 +4,8 @@ server:
     context-path: "/member"
 
 spring:
+  application:
+    name: member
   datasource:
     username: train
     password: 123456

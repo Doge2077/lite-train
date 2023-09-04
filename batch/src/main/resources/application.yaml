@@ -4,6 +4,8 @@ server:
     context-path: "/batch"
 
 spring:
+  application:
+    name: batch
   datasource:
     username: train
     password: 123456
