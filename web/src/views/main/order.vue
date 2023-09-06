@@ -105,22 +105,22 @@
     </div>
   </a-modal>
 
-  <!-- 第二层验证码 后端 -->
-  <a-modal v-model:visible="imageCodeModalVisible" :title="null" :footer="null" :closable="false"
-           style="top: 50px; width: 400px">
-    <p style="text-align: center; font-weight: bold; font-size: 18px">
-      使用服务端验证码削弱瞬时高峰<br/>
-      防止机器人刷票
-    </p>
-    <p>
-      <a-input v-model:value="imageCode" placeholder="图片验证码">
-        <template #suffix>
-          <img v-show="!!imageCodeSrc" :src="imageCodeSrc" alt="验证码" v-on:click="loadImageCode()"/>
-        </template>
-      </a-input>
-    </p>
-    <a-button type="danger" block @click="handleOk">输入验证码后开始购票</a-button>
-  </a-modal>
+<!--  &lt;!&ndash; 第二层验证码 后端 &ndash;&gt;-->
+<!--  <a-modal v-model:visible="imageCodeModalVisible" :title="null" :footer="null" :closable="false"-->
+<!--           style="top: 50px; width: 400px">-->
+<!--    <p style="text-align: center; font-weight: bold; font-size: 18px">-->
+<!--      使用服务端验证码削弱瞬时高峰<br/>-->
+<!--      防止机器人刷票-->
+<!--    </p>-->
+<!--    <p>-->
+<!--      <a-input v-model:value="imageCode" placeholder="图片验证码">-->
+<!--        <template #suffix>-->
+<!--          <img v-show="!!imageCodeSrc" :src="imageCodeSrc" alt="验证码" v-on:click="loadImageCode()"/>-->
+<!--        </template>-->
+<!--      </a-input>-->
+<!--    </p>-->
+<!--    <a-button type="danger" block @click="handleOk">输入验证码后开始购票</a-button>-->
+<!--  </a-modal>-->
 
   <!-- 第一层验证码 纯前端 -->
   <a-modal v-model:visible="firstImageCodeModalVisible" :title="null" :footer="null" :closable="false"

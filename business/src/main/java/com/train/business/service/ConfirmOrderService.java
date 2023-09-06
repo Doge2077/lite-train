@@ -5,14 +5,14 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.train.common.resp.PageResp;
-import com.train.common.util.SnowUtil;
 import com.train.business.domain.ConfirmOrder;
 import com.train.business.domain.ConfirmOrderExample;
 import com.train.business.mapper.ConfirmOrderMapper;
+import com.train.business.req.ConfirmOrderDoReq;
 import com.train.business.req.ConfirmOrderQueryReq;
-import com.train.business.req.ConfirmOrderSaveReq;
 import com.train.business.resp.ConfirmOrderQueryResp;
+import com.train.common.resp.PageResp;
+import com.train.common.util.SnowUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,17 +28,16 @@ public class ConfirmOrderService {
     @Resource
     private ConfirmOrderMapper confirmOrderMapper;
 
-    public void save(ConfirmOrderSaveReq req) {
-        DateTime nowTime = DateTime.now();
+    public void save(ConfirmOrderDoReq req) {
+        DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = BeanUtil.copyProperties(req, ConfirmOrder.class);
         if (ObjectUtil.isNull(confirmOrder.getId())) {
             confirmOrder.setId(SnowUtil.getSnowflakeNextId());
-            confirmOrder.setCreateTime(nowTime);
-            confirmOrder.setUpdateTime(nowTime);
+            confirmOrder.setCreateTime(now);
+            confirmOrder.setUpdateTime(now);
             confirmOrderMapper.insert(confirmOrder);
         } else {
-            confirmOrder.setCreateTime(confirmOrder.getCreateTime());
-            confirmOrder.setUpdateTime(nowTime);
+            confirmOrder.setUpdateTime(now);
             confirmOrderMapper.updateByPrimaryKey(confirmOrder);
         }
     }
