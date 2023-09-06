@@ -8,8 +8,11 @@ import com.github.pagehelper.PageInfo;
 import com.train.common.context.LoginMemberContext;
 import com.train.common.resp.PageResp;
 import com.train.common.util.SnowUtil;
+import com.train.member.domain.Member;
+import com.train.member.domain.MemberExample;
 import com.train.member.domain.Passenger;
 import com.train.member.domain.PassengerExample;
+import com.train.member.enums.PassengerTypeEnum;
 import com.train.member.mapper.MemberMapper;
 import com.train.member.mapper.PassengerMapper;
 import com.train.member.req.PassengerQueryReq;
@@ -20,6 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -77,5 +82,40 @@ public class PassengerService {
 
     public void delete(Long id) {
         passengerMapper.deleteByPrimaryKey(id);
+    }
+
+    public List<PassengerQueryResp> queryMine() {
+        PassengerExample passengerExample = new PassengerExample();
+        passengerExample.setOrderByClause("name asc");
+        PassengerExample.Criteria criteria = passengerExample.createCriteria();
+        criteria.andMemberIdEqualTo(LoginMemberContext.getId());
+        List<Passenger> list = passengerMapper.selectByExample(passengerExample);
+        return BeanUtil.copyToList(list, PassengerQueryResp.class);
+    }
+
+    /**
+     * 初始化乘客，如果没有张三，就增加乘客张三，李四、王五同理，防止线上体验时乘客被删光
+     */
+    public void init() {
+        DateTime now = DateTime.now();
+        MemberExample memberExample = new MemberExample();
+        memberExample.createCriteria().andMobileEqualTo("13000000000");
+        List<Member> memberList = memberMapper.selectByExample(memberExample);
+        Member member = memberList.get(0);
+
+        List<Passenger> passengerList = new ArrayList<>();
+
+        List<String> nameList = Arrays.asList("张三", "李四", "王五");
+        for (String s : nameList) {
+            Passenger passenger = new Passenger();
+            passenger.setId(SnowUtil.getSnowflakeNextId());
+            passenger.setMemberId(member.getId());
+            passenger.setName(s);
+            passenger.setIdCard("123456789123456789");
+            passenger.setType(PassengerTypeEnum.ADULT.getCode());
+            passenger.setCreateTime(now);
+            passenger.setUpdateTime(now);
+            passengerList.add(passenger);
+        }
     }
 }
